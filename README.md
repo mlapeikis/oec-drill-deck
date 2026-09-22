@@ -1,0 +1,141 @@
+# OEC Drill Deck
+
+Study tool for National Ski Patrol **Outdoor Emergency Care** candidates. Two modes:
+
+- **Question bank** — 265 multiple-choice questions across the twelve OEC domains, each with a
+  written rationale. Answer choices are reshuffled every round, so a retake is a real retake.
+  Tracks per-domain accuracy and can draw preferentially from questions you've missed before.
+- **Skill stations** — 16 practical stations drilled the way they're graded. You recall the
+  sequence out loud from memory, then reveal it step by step and mark yourself. Critical
+  Performance Indicators are flagged, and missing one fails the station exactly as it would on
+  the day.
+
+Everything is one self-contained HTML file. No build step required to *use* it, no server, no
+dependencies, no tracking, works offline.
+
+---
+
+## Deploying to GitHub Pages
+
+1. Create a new repository on GitHub — call it `oec-drill-deck`, public or private (Pages works
+   on private repos for paid plans; public is simplest).
+2. Upload the contents of this folder. Either drag the files into the GitHub web uploader, or:
+
+   ```bash
+   git init
+   git add .
+   git commit -m "OEC Drill Deck"
+   git branch -M main
+   git remote add origin https://github.com/YOUR-USERNAME/oec-drill-deck.git
+   git push -u origin main
+   ```
+
+3. In the repo, go to **Settings → Pages**.
+4. Under **Source**, choose **Deploy from a branch**. Set branch to `main` and folder to
+   `/ (root)`. Save.
+5. Wait about a minute. Your site appears at:
+
+   ```
+   https://YOUR-USERNAME.github.io/oec-drill-deck/
+   ```
+
+On your phone, open that URL and use **Share → Add to Home Screen**. It then launches
+full-screen like an app.
+
+The `.nojekyll` file matters — it stops GitHub from running the Jekyll processor, which can
+mangle files. Leave it in place.
+
+---
+
+## Editing the content
+
+`index.html` is **generated**. Don't edit it directly; your changes will be overwritten on the
+next build. Edit the files in `src/` and rebuild:
+
+```bash
+python3 build.py
+```
+
+That regenerates `index.html`. Commit and push, and Pages updates within a minute.
+
+### Files
+
+| File | What's in it |
+|---|---|
+| `src/shell.html` | The app — styling, screens, scoring logic |
+| `src/questions.js` | First 154 questions, plus the `DOMAINS` list |
+| `src/questions2.js` | Remaining 111 questions |
+| `src/stations.js` | Practical station step sheets, CPI flags, exam brief text |
+| `build.py` | Concatenates the above into `index.html` |
+
+### Adding a question
+
+Append to the array in `src/questions2.js`:
+
+```js
+{d:"env", q:"Question stem goes here?",
+ c:["The correct answer","A wrong answer","Another wrong answer","A fourth option"],
+ a:0,
+ e:"Why the right answer is right, and ideally why a tempting wrong one is wrong."},
+```
+
+- `d` — domain key. Valid keys are in `src/questions.js`: `found`, `anat`, `assess`, `airway`,
+  `circ`, `soft`, `msk`, `head`, `torso`, `med`, `env`, `spec`.
+- `a` — index of the correct answer in `c`. Writing every question with `a:0` is fine; the app
+  shuffles choice order at runtime, so answer position carries no signal.
+- `e` — shown after answering. This is where the studying actually happens; make it worth reading.
+
+### Adding a skill station
+
+Append to `STATIONS` in `src/stations.js`:
+
+```js
+{id:"unique-id", code:"21-2", name:"Sizing and Applying a Cervical Collar", it:true,
+ pass:"X of Y points, plus every CPI", crew:"Two rescuers",
+ note:"Context worth knowing before you drill it.",
+ groups:[{name:"Sequence", steps:[
+   {t:"First step", cpi:true},
+   {t:"Second step"},
+   {t:"An item some regions add", region:true}
+ ]}]},
+```
+
+- `cpi: true` — a Critical Performance Indicator. Missing it fails the station outright.
+- `region: true` — appears on some regional sheets but not the national one. Shown during the
+  drill but excluded from scoring.
+- `it: true` — NSP escalates this skill to Instructor Trainer observation.
+
+When you add a station, remove its entry from `STATION_GAPS` at the bottom of the same file.
+
+---
+
+## Sourcing and accuracy
+
+Station step sequences are transcribed from NSP-published OEC 6th-edition Skill Guides and a
+regional patient assessment sheet. The clinical claims in the question rationales were checked
+against current guidelines — including the Wilderness Medical Society frostbite, hypothermia,
+altitude and lightning guidelines and the AHA BLS guidelines — and where current guidance has
+moved away from what older course material says, the rationale says so rather than picking a
+side silently.
+
+Twelve mandatory skills are listed in the app but deliberately **not** drilled, because their
+official step sheets are published only in the OEC 6 textbook and Instructor Toolkit. Several
+are Instructor-Trainer observed and therefore likely stations, including cervical collar, long
+backboard, femoral traction splint and pelvic stabilization. NREMT skill sheets are a tempting
+substitute and an imperfect one — not because of vocabulary (BSI and Standard Precautions are
+used interchangeably, as are CMS and PMS) but because the step order and the set of scored
+items genuinely differ. Ask your Instructor of Record for those sheets; regions routinely hand
+them out.
+
+Two things vary by region and one question to your instructor resolves both: **which four
+skills will be tested**, and **which patient assessment sheet they grade from** (the national
+16-point Skill Guide 7-1, or a longer 21-point regional version).
+
+---
+
+## Not official
+
+This is a study aid built by a candidate, not National Ski Patrol material. The questions are
+not official NSP exam items. It does not replace the textbook, your instructors, or your
+patrol's local protocols. Where field practice varies — dislocation reduction, frostbite
+rewarming, oxygen delivery — follow your medical director.

@@ -1,0 +1,1088 @@
+<title>OEC Drill Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Barlow+Condensed:wght@500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{
+  --bg:#EDF1F6; --surface:#FFFFFF; --surface-2:#F5F8FC; --raise:#E4EBF3;
+  --ink:#101A26; --ink-2:#31405230; --muted:#5C6B7F; --line:#D3DCE7; --line-2:#C0CCDA;
+  --accent:#C8102E; --accent-soft:#C8102E14; --accent-line:#C8102E38; --on-accent:#FFFFFF;
+  --ok:#0E7C66; --ok-soft:#0E7C6614; --ok-line:#0E7C6640;
+  --bad:#B3242F; --bad-soft:#B3242F12; --bad-line:#B3242F3A;
+  --warn:#9A5A08;
+  --shadow:0 1px 2px #0d1a2a0d, 0 8px 24px -12px #0d1a2a26;
+  --sans:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --cond:"Barlow Condensed","Archivo Narrow",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D141D; --surface:#16202C; --surface-2:#1B2734; --raise:#223040;
+    --ink:#E8EEF6; --ink-2:#8aa0bb2e; --muted:#94A4B8; --line:#27343F; --line-2:#33434F;
+    --accent:#FF5F70; --accent-soft:#FF5F7016; --accent-line:#FF5F7040; --on-accent:#1A0A0D;
+    --ok:#46CFAC; --ok-soft:#46CFAC14; --ok-line:#46CFAC3D;
+    --bad:#FF7480; --bad-soft:#FF748012; --bad-line:#FF74803A;
+    --warn:#E5A34A;
+    --shadow:0 1px 2px #0006, 0 10px 28px -14px #0009;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D141D; --surface:#16202C; --surface-2:#1B2734; --raise:#223040;
+  --ink:#E8EEF6; --ink-2:#8aa0bb2e; --muted:#94A4B8; --line:#27343F; --line-2:#33434F;
+  --accent:#FF5F70; --accent-soft:#FF5F7016; --accent-line:#FF5F7040; --on-accent:#1A0A0D;
+  --ok:#46CFAC; --ok-soft:#46CFAC14; --ok-line:#46CFAC3D;
+  --bad:#FF7480; --bad-soft:#FF748012; --bad-line:#FF74803A;
+  --warn:#E5A34A;
+  --shadow:0 1px 2px #0006, 0 10px 28px -14px #0009;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+     -webkit-font-smoothing:antialiased;font-size:15px;line-height:1.5}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.wrap{max-width:730px;margin:0 auto;padding-inline:16px;padding-block:0 56px}
+.lbl{font-family:var(--cond);text-transform:uppercase;letter-spacing:.09em;
+     font-weight:600;font-size:12.5px;color:var(--muted)}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* ---------- masthead ---------- */
+.mast{padding-block:30px 20px;border-bottom:1px solid var(--line)}
+.mast-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+h1{font-size:clamp(25px,6vw,34px);font-weight:700;letter-spacing:-.022em;margin:0;
+   text-wrap:balance;line-height:1.08}
+.cross{display:inline-grid;place-items:center;width:23px;height:23px;flex:none;
+  background:var(--accent);border-radius:3px;position:relative;top:2px}
+.cross::before,.cross::after{content:"";position:absolute;background:var(--surface);border-radius:1px}
+.cross::before{width:11px;height:3.2px}
+.cross::after{width:3.2px;height:11px}
+.sub{color:var(--muted);margin:9px 0 0;max-width:56ch;font-size:14.5px}
+.mast-meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.mast-meta b{font-family:var(--cond);font-size:19px;font-weight:600;color:var(--ink);
+  letter-spacing:.01em;margin-right:5px}
+
+/* ---------- setup ---------- */
+.sect{margin-top:30px}
+.sect-hd{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  margin-bottom:11px;flex-wrap:wrap}
+.link{font-family:var(--cond);text-transform:uppercase;letter-spacing:.07em;font-weight:600;
+  font-size:12.5px;color:var(--accent);border-bottom:1px solid var(--accent-line);padding-bottom:1px}
+.link:hover{border-bottom-color:var(--accent)}
+.link+.link{margin-left:14px}
+
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(212px,1fr));gap:9px}
+.chip{display:block;width:100%;text-align:left;background:var(--surface);
+  border:1px solid var(--line);border-radius:9px;padding:11px 12px 10px;
+  transition:border-color .12s,background .12s}
+.chip:hover{border-color:var(--line-2)}
+.chip[aria-pressed="true"]{border-color:var(--accent-line);background:var(--accent-soft)}
+.chip-top{display:flex;align-items:center;gap:8px}
+.tick{width:15px;height:15px;flex:none;border:1.5px solid var(--line-2);border-radius:4px;
+  display:grid;place-items:center}
+.chip[aria-pressed="true"] .tick{background:var(--accent);border-color:var(--accent)}
+.tick svg{display:none;width:9px;height:9px}
+.chip[aria-pressed="true"] .tick svg{display:block}
+.chip-name{font-weight:600;font-size:14px;letter-spacing:-.005em;flex:1;min-width:0}
+.chip-n{font-family:var(--cond);font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.chip-bar{display:block;margin-top:10px;height:3px;border-radius:2px;
+  background:var(--ink-2);overflow:hidden}
+.chip-bar i{display:block;height:100%;background:var(--ok);border-radius:2px}
+.chip-foot{display:block;margin-top:6px;font-family:var(--cond);font-size:12.5px;
+  color:var(--muted);letter-spacing:.03em;font-variant-numeric:tabular-nums}
+
+.opts{display:flex;flex-wrap:wrap;gap:22px}
+.optgrp{flex:1 1 200px;min-width:0}
+.optgrp>.lbl{display:block}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.seg button{border:1px solid var(--line);background:var(--surface);border-radius:7px;
+  padding:6px 12px;font-family:var(--cond);font-size:15px;font-weight:600;letter-spacing:.02em;
+  color:var(--muted);transition:.12s}
+.seg button:hover{border-color:var(--line-2);color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.hint{margin-top:7px;font-size:13px;color:var(--muted);max-width:50ch}
+
+.go{margin-top:28px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.btn{background:var(--accent);color:var(--on-accent);border-radius:9px;padding:12px 24px;
+  font-weight:600;font-size:15.5px;letter-spacing:-.005em;box-shadow:var(--shadow);transition:.12s}
+.btn:hover{filter:brightness(1.07)}
+.btn:disabled{opacity:.4;cursor:not-allowed;filter:none}
+.btn-2{background:var(--surface);color:var(--ink);border:1px solid var(--line-2);
+  border-radius:9px;padding:11px 20px;font-weight:600;font-size:15px;box-shadow:none}
+.btn-2:hover{background:var(--surface-2);filter:none}
+
+/* ---------- quiz rail ---------- */
+.rail{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--bg);
+  border-bottom:1px solid var(--line);margin-inline:-16px;padding:11px 16px 0}
+.rail-in{max-width:698px;margin:0 auto;display:flex;align-items:center;gap:14px}
+.rail .lbl{white-space:nowrap}
+.rail-sp{flex:1}
+.track{height:2px;background:var(--ink-2);margin-top:10px;border-radius:2px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--accent);border-radius:2px;
+  transition:width .25s ease}
+
+/* ---------- question ---------- */
+.qwrap{padding-top:26px}
+.qmeta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.tag{font-family:var(--cond);text-transform:uppercase;letter-spacing:.08em;font-weight:600;
+  font-size:12px;color:var(--accent);background:var(--accent-soft);
+  border:1px solid var(--accent-line);border-radius:999px;padding:2px 10px 1px}
+.flagbtn{font-family:var(--cond);text-transform:uppercase;letter-spacing:.07em;font-weight:600;
+  font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;
+  padding:2px 10px 1px;transition:.12s}
+.flagbtn:hover{border-color:var(--line-2);color:var(--ink)}
+.flagbtn[aria-pressed="true"]{color:var(--warn);border-color:var(--warn);background:#9A5A080f}
+.stem{font-family:var(--serif);font-size:20.5px;line-height:1.42;letter-spacing:-.003em;
+  margin:0 0 20px;text-wrap:pretty;max-width:62ch}
+
+.choices{display:flex;flex-direction:column;gap:8px}
+.ch{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  padding:12px 14px;transition:border-color .12s,background .12s}
+.ch:hover:not(:disabled){border-color:var(--line-2);background:var(--surface-2)}
+.ch:disabled{cursor:default}
+.ch-k{font-family:var(--cond);font-weight:600;font-size:15px;line-height:1.45;
+  color:var(--muted);flex:none;width:15px}
+.ch-t{font-family:var(--serif);font-size:16.5px;line-height:1.45;flex:1;min-width:0}
+.ch.pick{border-color:var(--line-2);background:var(--raise)}
+.ch.right{border-color:var(--ok-line);background:var(--ok-soft)}
+.ch.right .ch-k{color:var(--ok)}
+.ch.wrong{border-color:var(--bad-line);background:var(--bad-soft)}
+.ch.wrong .ch-k{color:var(--bad)}
+.ch-mk{margin-left:auto;padding-left:10px;font-family:var(--cond);font-size:12.5px;
+  font-weight:600;letter-spacing:.07em;text-transform:uppercase;flex:none;line-height:1.7}
+.ch.right .ch-mk{color:var(--ok)}
+.ch.wrong .ch-mk{color:var(--bad)}
+
+.exp{margin-top:18px;border-left:3px solid var(--line-2);padding:2px 0 2px 15px}
+.exp.ok{border-left-color:var(--ok)}
+.exp.no{border-left-color:var(--bad)}
+.exp .lbl{display:block;margin-bottom:5px}
+.exp.ok .lbl{color:var(--ok)}
+.exp.no .lbl{color:var(--bad)}
+.exp p{margin:0;font-family:var(--serif);font-size:16px;line-height:1.55;max-width:64ch;
+  color:var(--ink)}
+.navrow{margin-top:26px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.kbd{margin-left:auto;font-family:var(--cond);font-size:12.5px;letter-spacing:.05em;
+  color:var(--muted);text-transform:uppercase}
+.kbd kbd{font-family:var(--cond);font-size:12.5px;border:1px solid var(--line-2);
+  border-radius:4px;padding:0 5px;background:var(--surface)}
+
+/* ---------- results ---------- */
+.score{display:flex;align-items:center;gap:26px;flex-wrap:wrap;padding-block:30px 6px}
+.ring{position:relative;flex:none}
+.ring svg{display:block;transform:rotate(-90deg)}
+.ring-c{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring-c b{font-family:var(--cond);font-size:38px;font-weight:600;line-height:1;
+  letter-spacing:.01em;font-variant-numeric:tabular-nums}
+.ring-c span{font-family:var(--cond);font-size:12.5px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--muted);display:block;margin-top:3px}
+.score-txt{flex:1 1 230px;min-width:0}
+.score-txt h2{font-size:23px;font-weight:700;letter-spacing:-.02em;margin:0 0 7px;
+  text-wrap:balance}
+.score-txt p{margin:0;color:var(--muted);font-size:14.5px;max-width:46ch}
+.facts{display:flex;gap:20px;flex-wrap:wrap;margin-top:14px}
+.fact b{font-family:var(--cond);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;
+  margin-right:5px}
+
+.brk{display:flex;flex-direction:column;gap:9px}
+.brow{display:grid;grid-template-columns:minmax(0,1fr) 120px 48px;gap:12px;align-items:center}
+.brow-n{font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brow-b{height:7px;border-radius:4px;background:var(--ink-2);overflow:hidden}
+.brow-b i{display:block;height:100%;border-radius:4px}
+.brow-v{font-family:var(--cond);font-size:14.5px;color:var(--muted);text-align:right;
+  font-variant-numeric:tabular-nums}
+@media (max-width:460px){.brow{grid-template-columns:minmax(0,1fr) 72px 44px;gap:9px}}
+
+.dbf{display:flex;flex-direction:column;gap:11px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:11px;
+  padding:15px 16px;box-shadow:var(--shadow)}
+.card .tag{margin-bottom:9px;display:inline-block}
+.card .qq{font-family:var(--serif);font-size:16.5px;line-height:1.45;margin:0 0 11px;
+  max-width:62ch}
+.ans{display:flex;gap:9px;align-items:baseline;font-size:14.5px;margin-bottom:4px;
+  flex-wrap:wrap}
+.ans .lbl{flex:none;width:52px}
+.ans.no span{color:var(--bad);font-family:var(--serif);font-size:15.5px}
+.ans.yes span{color:var(--ok);font-family:var(--serif);font-size:15.5px}
+.card .why{margin:11px 0 0;font-family:var(--serif);font-size:15.5px;line-height:1.55;
+  color:var(--muted);max-width:64ch}
+.foot{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);
+  font-size:13px;color:var(--muted);line-height:1.55;max-width:62ch}
+.foot b{color:var(--ink);font-weight:600}
+
+/* ---------- mode tabs ---------- */
+.tabs{display:flex;gap:2px;margin-top:20px;border-bottom:1px solid var(--line)}
+.tabs button{font-family:var(--cond);text-transform:uppercase;letter-spacing:.08em;
+  font-weight:600;font-size:13.5px;color:var(--muted);padding:9px 14px 8px;
+  border-bottom:2px solid transparent;margin-bottom:-1px;transition:.12s}
+.tabs button:hover{color:var(--ink)}
+.tabs button[aria-pressed="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* ---------- station list ---------- */
+.stlist{display:flex;flex-direction:column;gap:8px}
+.stcard{display:flex;gap:13px;align-items:baseline;width:100%;text-align:left;
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  padding:13px 15px;transition:border-color .12s,background .12s}
+.stcard:hover{border-color:var(--line-2);background:var(--surface-2)}
+.stcode{font-family:var(--cond);font-size:15px;font-weight:600;color:var(--muted);
+  flex:none;width:46px;font-variant-numeric:tabular-nums}
+.stbody{flex:1;min-width:0}
+.stname{font-weight:600;font-size:15px;letter-spacing:-.008em;display:block}
+.stmeta{display:block;margin-top:4px;font-family:var(--cond);font-size:13px;
+  color:var(--muted);letter-spacing:.03em}
+.itbadge{font-family:var(--cond);text-transform:uppercase;letter-spacing:.07em;
+  font-weight:600;font-size:11px;color:var(--warn);border:1px solid var(--warn);
+  border-radius:999px;padding:1px 7px 0;margin-left:7px;white-space:nowrap}
+.stlast{font-family:var(--cond);font-size:13.5px;flex:none;text-align:right;
+  letter-spacing:.03em;font-variant-numeric:tabular-nums}
+
+/* ---------- station drill ---------- */
+.dnote{font-family:var(--serif);font-size:16px;line-height:1.55;color:var(--muted);
+  max-width:64ch;margin:10px 0 0}
+.grouphd{margin:24px 0 10px;display:flex;align-items:baseline;gap:10px}
+.grouphd .lbl{color:var(--ink)}
+.step{display:flex;gap:13px;align-items:flex-start;background:var(--surface);
+  border:1px solid var(--line);border-radius:10px;padding:13px 15px;margin-bottom:8px}
+.step.hit{border-color:var(--ok-line);background:var(--ok-soft)}
+.step.miss{border-color:var(--bad-line);background:var(--bad-soft)}
+.stepn{font-family:var(--cond);font-weight:600;font-size:15px;color:var(--muted);
+  flex:none;width:20px;line-height:1.5;font-variant-numeric:tabular-nums}
+.stept{flex:1;min-width:0;font-family:var(--serif);font-size:16.5px;line-height:1.48}
+.cpi{display:inline-block;font-family:var(--cond);text-transform:uppercase;
+  letter-spacing:.08em;font-weight:600;font-size:11px;color:var(--accent);
+  background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:999px;
+  padding:1px 8px 0;margin-left:8px;vertical-align:2px;white-space:nowrap}
+.rgn{display:inline-block;font-family:var(--cond);text-transform:uppercase;
+  letter-spacing:.08em;font-weight:600;font-size:11px;color:var(--muted);
+  border:1px solid var(--line-2);border-radius:999px;padding:1px 8px 0;margin-left:8px;
+  vertical-align:2px;white-space:nowrap}
+.selfrow{display:flex;gap:9px;margin-top:16px;flex-wrap:wrap}
+.yes,.no{border-radius:9px;padding:10px 20px;font-weight:600;font-size:15px;
+  border:1px solid var(--line-2);background:var(--surface);transition:.12s}
+.yes:hover{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+.no:hover{border-color:var(--bad);color:var(--bad);background:var(--bad-soft)}
+.prime{background:var(--surface-2);border:1px solid var(--line);border-radius:11px;
+  padding:17px 18px;margin-top:20px}
+.prime p{margin:0;font-family:var(--serif);font-size:16.5px;line-height:1.5;max-width:60ch}
+.prime .lbl{display:block;margin-bottom:7px}
+
+/* ---------- reference ---------- */
+.ref dl{margin:0;display:flex;flex-direction:column;gap:17px}
+.ref dt{font-family:var(--cond);text-transform:uppercase;letter-spacing:.09em;
+  font-weight:600;font-size:12.5px;color:var(--accent);margin-bottom:5px}
+.ref dd{margin:0;font-family:var(--serif);font-size:16.5px;line-height:1.55;max-width:64ch}
+.gaps{display:flex;flex-direction:column;gap:5px;margin-top:11px}
+.gap{display:flex;gap:13px;align-items:baseline;font-size:14.5px}
+.gap span:first-child{font-family:var(--cond);color:var(--muted);flex:none;width:46px;
+  font-variant-numeric:tabular-nums}
+</style>
+
+<div class="wrap">
+  <div id="app"></div>
+  <p class="foot">
+    <b>Study aid only.</b> These questions were written to drill the concepts in the
+    Outdoor Emergency Care curriculum — they are not official National Ski Patrol exam
+    items, and they don't replace the textbook, your instructors, or your patrol's local
+    protocols. Where field practice varies (dislocation reduction, field rewarming,
+    oxygen delivery), follow your medical director.
+  </p>
+</div>
+
+<script>
+/*__QUESTIONS__*/
+
+/* ---------------- storage: db capability, localStorage fallback ---------------- */
+const LS_KEY = "oec.drill.v1";        // legacy: a bare map of questionId -> record
+const LS_KEY2 = "oec.drill.v2";       // current: { stats, stations }
+const Store = (() => {
+  let stats = {}, stations = {}, doc = null, timer = null;
+
+  function fromLocal(){
+    try {
+      const v2 = JSON.parse(localStorage.getItem(LS_KEY2) || "null");
+      if (v2 && typeof v2 === "object")
+        return { stats: v2.stats || {}, stations: v2.stations || {} };
+      const v1 = JSON.parse(localStorage.getItem(LS_KEY) || "null");
+      if (v1 && typeof v1 === "object") return { stats: v1, stations: {} };
+    } catch (e) {}
+    return { stats: {}, stations: {} };
+  }
+  function toLocal(){
+    try { localStorage.setItem(LS_KEY2, JSON.stringify({ stats, stations })); } catch (e) {}
+  }
+  function mergeQ(a, b){
+    if (!a) return b;
+    if (!b) return a;
+    return { seen: Math.max(a.seen || 0, b.seen || 0),
+             wrong: Math.max(a.wrong || 0, b.wrong || 0),
+             right: Math.max(a.right || 0, b.right || 0) };
+  }
+
+  return {
+    get stats(){ return stats; },
+    get stations(){ return stations; },
+
+    boot(onSync){
+      const local = fromLocal();
+      stats = local.stats; stations = local.stations;
+      (async () => {
+        try {
+          const db = await window.claude?.use?.("db");
+          if (!db) return;
+          doc = db.doc("progress/main");
+          const snap = await doc.get();
+          const d = (snap && snap.data) || null;
+          if (d) {
+            const rq = d.stats || {};
+            for (const k in rq) stats[k] = mergeQ(stats[k], rq[k]);
+            const rs = d.stations || {};
+            for (const k in rs) {
+              const a = stations[k], b = rs[k];
+              // keep whichever attempt is more recent
+              if (!a || (b && (b.at || 0) > (a.at || 0))) stations[k] = b;
+            }
+            toLocal(); onSync && onSync();
+          }
+          Store.save();
+        } catch (e) {}
+      })();
+    },
+
+    record(id, correct){
+      const s = stats[id] || (stats[id] = { seen: 0, wrong: 0, right: 0 });
+      s.seen++; correct ? s.right++ : s.wrong++;
+      Store.save();
+    },
+
+    recordStation(id, result){
+      stations[id] = Object.assign({ at: Date.now() }, result);
+      Store.save();
+    },
+
+    save(){
+      toLocal();
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        if (doc) doc.set({ stats, stations, updated: Date.now() }).catch(() => {});
+      }, 900);
+    },
+
+    reset(){
+      stats = {}; stations = {};
+      toLocal();
+      try { localStorage.removeItem(LS_KEY); } catch (e) {}
+      if (doc) doc.set({ stats: {}, stations: {}, updated: Date.now() }).catch(() => {});
+    }
+  };
+})();
+
+/* ---------------- helpers ---------------- */
+const $ = (s, r = document) => r.querySelector(s);
+const app = $("#app");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+const KEYS = ["A", "B", "C", "D"];
+const TARGET = 80;
+
+function qid(q){
+  let h = 5381;
+  for (let i = 0; i < q.q.length; i++) h = ((h << 5) + h + q.q.charCodeAt(i)) | 0;
+  return (h >>> 0).toString(36);
+}
+QUESTIONS.forEach(q => { q.id = qid(q); });
+const DNAME = Object.fromEntries(DOMAINS.map(d => [d.key, d.name]));
+const DSHORT = Object.fromEntries(DOMAINS.map(d => [d.key, d.short]));
+
+function shuffle(a){
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function domainStat(key){
+  let seen = 0, right = 0;
+  for (const q of QUESTIONS){
+    if (q.d !== key) continue;
+    const s = Store.stats[q.id];
+    if (s && s.seen){ seen += s.seen; right += (s.right || 0); }
+  }
+  return { seen, pct: seen ? Math.round(right / seen * 100) : null };
+}
+function pctColor(p){ return p >= TARGET ? "var(--ok)" : p >= 60 ? "var(--warn)" : "var(--bad)"; }
+function mmss(ms){
+  const t = Math.max(0, Math.round(ms / 1000));
+  return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0");
+}
+
+/* ---------------- state ---------------- */
+const S = {
+  tab: "q",              // q | st | ref
+  screen: "setup",       // setup | quiz | results | stlist | drill | stresult
+  picked: new Set(DOMAINS.map(d => d.key)),
+  count: 25,
+  mode: "practice",      // practice | exam
+  source: "all",         // all | weak
+  session: null,
+  drill: null
+};
+
+const TABS = [["q","Question bank"],["st","Skill stations"],["ref","Exam brief"]];
+
+function masthead(sub){
+  return `<header class="mast" style="border-bottom:none;padding-bottom:0">
+    <div class="mast-top"><span class="cross"></span><h1>OEC Drill Deck</h1></div>
+    <p class="sub">${sub}</p>
+    ${tabsNav()}
+  </header>`;
+}
+
+function tabsNav(){
+  return `<nav class="tabs">${TABS.map(([k, t]) =>
+    `<button data-tab="${k}" aria-pressed="${S.tab === k}">${t}</button>`).join("")}</nav>`;
+}
+
+/* ---------------- session building ---------------- */
+function buildSession(items){
+  return {
+    items: items.map(q => {
+      const order = shuffle([0, 1, 2, 3]);
+      return { q, order, correctPos: order.indexOf(q.a), pick: null, flag: false };
+    }),
+    i: 0, revealed: false, started: Date.now(), ended: null
+  };
+}
+function startSession(){
+  let pool = QUESTIONS.filter(q => S.picked.has(q.d));
+  if (S.source === "weak"){
+    const missed = pool.filter(q => (Store.stats[q.id]?.wrong || 0) > 0);
+    const unseen = pool.filter(q => !Store.stats[q.id]?.seen);
+    const rest   = pool.filter(q => !missed.includes(q) && !unseen.includes(q));
+    missed.sort((a, b) => (Store.stats[b.id].wrong - Store.stats[a.id].wrong));
+    pool = [...missed, ...shuffle(unseen), ...shuffle(rest)];
+  } else {
+    pool = shuffle(pool.slice());
+  }
+  const n = S.count === "all" ? pool.length : Math.min(S.count, pool.length);
+  S.session = buildSession(pool.slice(0, n));
+  S.screen = "quiz";
+  render();
+  window.scrollTo(0, 0);
+}
+function retryMissed(){
+  const missed = S.session.items.filter(it => it.pick !== it.correctPos).map(it => it.q);
+  if (!missed.length) return;
+  S.session = buildSession(shuffle(missed));
+  S.screen = "quiz";
+  render();
+  window.scrollTo(0, 0);
+}
+
+/* ---------------- screens ---------------- */
+function viewSetup(){
+  const pool = QUESTIONS.filter(q => S.picked.has(q.d)).length;
+  const lifetime = DOMAINS.map(d => domainStat(d.key));
+  const totalSeen = lifetime.reduce((a, s) => a + s.seen, 0);
+  const overall = totalSeen
+    ? Math.round(DOMAINS.reduce((a, d, i) => a + (lifetime[i].pct || 0) * lifetime[i].seen, 0) / totalSeen)
+    : null;
+  const weakCount = QUESTIONS.filter(q => S.picked.has(q.d) && (Store.stats[q.id]?.wrong || 0) > 0).length;
+
+  const chips = DOMAINS.map((d, i) => {
+    const n = QUESTIONS.filter(q => q.d === d.key).length;
+    const st = lifetime[i];
+    const on = S.picked.has(d.key);
+    return `<button class="chip" aria-pressed="${on}" data-dom="${d.key}">
+      <span class="chip-top">
+        <span class="tick"><svg viewBox="0 0 10 10" fill="none"><path d="M1 5.2 3.7 8 9 2" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="chip-name">${esc(d.name)}</span>
+        <span class="chip-n">${n}</span>
+      </span>
+      <span class="chip-bar"><i style="width:${st.pct == null ? 0 : st.pct}%;background:${st.pct == null ? "var(--line-2)" : pctColor(st.pct)}"></i></span>
+      <span class="chip-foot">${st.pct == null ? "not yet drilled" : st.pct + "% &middot; " + st.seen + " answered"}</span>
+    </button>`;
+  }).join("");
+
+  const seg = (name, val, arr) => `<div class="seg">` + arr.map(([v, t]) =>
+    `<button data-set="${name}" data-val="${v}" aria-pressed="${String(S[name]) === String(v)}">${t}</button>`).join("") + `</div>`;
+
+  return `
+  ${masthead(`${QUESTIONS.length} practice questions across the twelve Outdoor Emergency Care
+    domains, with a written rationale on every answer. Answer choices are reshuffled each
+    round, so a second pass is a real second pass.`)}
+
+  <div class="mast-meta lbl" style="margin-top:20px">
+    <span><b class="tnum">${QUESTIONS.length}</b>questions</span>
+    <span><b class="tnum">${DOMAINS.length}</b>domains</span>
+    <span><b class="tnum">${overall == null ? "&mdash;" : overall + "%"}</b>lifetime accuracy</span>
+    ${totalSeen ? `<span><b class="tnum">${totalSeen}</b>answered</span>` : ""}
+  </div>
+
+  <section class="sect">
+    <div class="sect-hd">
+      <span class="lbl">Domains &mdash; ${S.picked.size} selected, ${pool} questions in pool</span>
+      <span><button class="link" data-all="1">All</button><button class="link" data-all="0">None</button></span>
+    </div>
+    <div class="chips">${chips}</div>
+  </section>
+
+  <section class="sect">
+    <div class="opts">
+      <div class="optgrp">
+        <span class="lbl">Round length</span>
+        ${seg("count", S.count, [[10, "10"], [25, "25"], [50, "50"], ["all", "Full pool"]])}
+      </div>
+      <div class="optgrp">
+        <span class="lbl">Mode</span>
+        ${seg("mode", S.mode, [["practice", "Practice"], ["exam", "Exam"]])}
+        <p class="hint">${S.mode === "practice"
+          ? "Rationale appears the moment you answer."
+          : "Timed, no feedback until the debrief at the end."}</p>
+      </div>
+      <div class="optgrp">
+        <span class="lbl">Draw from</span>
+        ${seg("source", S.source, [["all", "Everything"], ["weak", "Weak spots"]])}
+        <p class="hint">${S.source === "weak"
+          ? (weakCount ? weakCount + " question" + (weakCount === 1 ? "" : "s") + " you've missed before come up first."
+                       : "Nothing missed yet in these domains — this will behave like Everything.")
+          : "Random draw across every selected domain."}</p>
+      </div>
+    </div>
+    <div class="go">
+      <button class="btn" data-start="1" ${pool ? "" : "disabled"}>
+        Start ${pool ? (S.count === "all" ? pool : Math.min(S.count, pool)) : ""} questions</button>
+      ${totalSeen ? `<button class="link" data-reset="1">Clear my progress</button>` : ""}
+    </div>
+  </section>`;
+}
+
+function viewQuiz(){
+  const ss = S.session, it = ss.items[ss.i];
+  const answered = ss.items.filter(x => x.pick !== null).length;
+  const rightSoFar = ss.items.filter(x => x.pick !== null && x.pick === x.correctPos).length;
+  const done = ss.revealed;
+  const isLast = ss.i === ss.items.length - 1;
+
+  const choices = it.order.map((orig, pos) => {
+    let cls = "ch";
+    if (done){
+      if (pos === it.correctPos) cls += " right";
+      else if (pos === it.pick) cls += " wrong";
+    } else if (pos === it.pick) cls += " pick";
+    const mark = done && pos === it.correctPos ? "Correct"
+               : done && pos === it.pick ? "Your pick" : "";
+    return `<button class="${cls}" data-pick="${pos}" ${done ? "disabled" : ""}>
+        <span class="ch-k">${KEYS[pos]}</span>
+        <span class="ch-t">${esc(it.q.c[orig])}</span>
+        ${mark ? `<span class="ch-mk">${mark}</span>` : ""}
+      </button>`;
+  }).join("");
+
+  const wasRight = it.pick === it.correctPos;
+  const expBlock = done ? `
+    <div class="exp ${wasRight ? "ok" : "no"}">
+      <span class="lbl">${wasRight ? "Correct" : "Not quite &mdash; " + KEYS[it.correctPos] + " is right"}</span>
+      <p>${esc(it.q.e)}</p>
+    </div>` : "";
+
+  return `
+  <div class="rail">
+    <div class="rail-in">
+      <span class="lbl tnum">Q ${ss.i + 1} / ${ss.items.length}</span>
+      <span class="rail-sp"></span>
+      ${S.mode === "practice"
+        ? `<span class="lbl tnum">${answered ? rightSoFar + " / " + answered + " correct" : "&mdash;"}</span>`
+        : `<span class="lbl tnum" id="clock">${mmss(Date.now() - ss.started)}</span>`}
+      <button class="link" data-quit="1">End round</button>
+    </div>
+    <div class="track"><i style="width:${(ss.i + (done ? 1 : 0)) / ss.items.length * 100}%"></i></div>
+  </div>
+
+  <div class="qwrap">
+    <div class="qmeta">
+      <span class="tag">${esc(DSHORT[it.q.d])}</span>
+      <button class="flagbtn" data-flag="1" aria-pressed="${it.flag}">
+        ${it.flag ? "Flagged" : "Flag for review"}</button>
+    </div>
+    <p class="stem">${esc(it.q.q)}</p>
+    <div class="choices">${choices}</div>
+    ${expBlock}
+    <div class="navrow">
+      ${done || S.mode === "exam"
+        ? `<button class="btn" data-next="1">${isLast ? "Finish &amp; debrief" : "Next question"}</button>`
+        : `<button class="btn" data-submit="1" ${it.pick === null ? "disabled" : ""}>Submit answer</button>`}
+      ${ss.i > 0 && S.mode === "exam" ? `<button class="btn-2" data-back="1">Back</button>` : ""}
+      <span class="kbd"><kbd>1</kbd>&ndash;<kbd>4</kbd> pick &middot; <kbd>Enter</kbd> continue</span>
+    </div>
+  </div>`;
+}
+
+function viewResults(){
+  const ss = S.session;
+  const items = ss.items;
+  const right = items.filter(it => it.pick === it.correctPos).length;
+  const pct = Math.round(right / items.length * 100);
+  const elapsed = (ss.ended || Date.now()) - ss.started;
+  const per = items.length ? elapsed / items.length : 0;
+
+  const byDom = {};
+  items.forEach(it => {
+    const k = it.q.d;
+    (byDom[k] || (byDom[k] = { n: 0, r: 0 })).n++;
+    if (it.pick === it.correctPos) byDom[k].r++;
+  });
+  const rows = Object.keys(byDom)
+    .map(k => ({ k, ...byDom[k], p: Math.round(byDom[k].r / byDom[k].n * 100) }))
+    .sort((a, b) => a.p - b.p)
+    .map(r => `<div class="brow">
+        <span class="brow-n">${esc(DNAME[r.k])}</span>
+        <span class="brow-b"><i style="width:${r.p}%;background:${pctColor(r.p)}"></i></span>
+        <span class="brow-v tnum">${r.r}/${r.n}</span>
+      </div>`).join("");
+
+  const review = items.filter(it => it.pick !== it.correctPos || it.flag);
+  const cards = review.map(it => {
+    const miss = it.pick !== it.correctPos;
+    return `<div class="card">
+      <span class="tag">${esc(DSHORT[it.q.d])}</span>${it.flag ? ` <span class="flagbtn" aria-pressed="true" style="pointer-events:none">Flagged</span>` : ""}
+      <p class="qq">${esc(it.q.q)}</p>
+      ${miss ? `<div class="ans no"><span class="lbl">You</span><span>${it.pick === null ? "No answer" : esc(it.q.c[it.order[it.pick]])}</span></div>` : ""}
+      <div class="ans yes"><span class="lbl">Answer</span><span>${esc(it.q.c[it.q.a])}</span></div>
+      <p class="why">${esc(it.q.e)}</p>
+    </div>`;
+  }).join("");
+
+  const R = 58, C = 2 * Math.PI * R;
+  const verdict = pct >= 90 ? "Solid round." : pct >= TARGET ? "Above the study target."
+                : pct >= 60 ? "Getting there." : "Worth a re-read before the next round.";
+  const note = pct >= TARGET
+    ? "Keep the weak-spot drill running on the domains at the bottom of the breakdown."
+    : "The breakdown below is sorted worst-first — start your reading there, then run a weak-spot round.";
+
+  return `
+  ${tabsNav()}
+  <section class="score">
+    <div class="ring">
+      <svg width="140" height="140" viewBox="0 0 140 140">
+        <circle cx="70" cy="70" r="${R}" fill="none" stroke="var(--ink-2)" stroke-width="9"/>
+        <circle cx="70" cy="70" r="${R}" fill="none" stroke="${pctColor(pct)}" stroke-width="9"
+          stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - pct / 100)}"/>
+      </svg>
+      <div class="ring-c"><b class="tnum" style="color:${pctColor(pct)}">${pct}%</b><span>scored</span></div>
+    </div>
+    <div class="score-txt">
+      <h2>${verdict}</h2>
+      <p>${note}</p>
+      <div class="facts lbl">
+        <span class="fact"><b class="tnum">${right}/${items.length}</b>correct</span>
+        <span class="fact"><b class="tnum">${mmss(elapsed)}</b>elapsed</span>
+        <span class="fact"><b class="tnum">${(per / 1000).toFixed(0)}s</b>per question</span>
+        <span class="fact"><b class="tnum">${TARGET}%</b>study target</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sect">
+    <div class="sect-hd"><span class="lbl">This round by domain &mdash; weakest first</span></div>
+    <div class="brk">${rows}</div>
+  </section>
+
+  <section class="sect">
+    <div class="sect-hd">
+      <span class="lbl">Debrief &mdash; ${review.length ? review.length + " to review" : "nothing missed or flagged"}</span>
+    </div>
+    ${review.length ? `<div class="dbf">${cards}</div>`
+      : `<p class="hint">Clean round — every question correct and nothing flagged.</p>`}
+  </section>
+
+  <div class="go">
+    ${items.filter(it => it.pick !== it.correctPos).length
+      ? `<button class="btn" data-retry="1">Retry the ${items.filter(it => it.pick !== it.correctPos).length} missed</button>` : ""}
+    <button class="btn-2" data-home="1">New round</button>
+  </div>`;
+}
+
+/* ---------------- skill stations ---------------- */
+function flatSteps(st){
+  const out = [];
+  st.groups.forEach(g => g.steps.forEach(s => out.push({ ...s, group: g.name })));
+  return out;
+}
+function stationVerdict(st, marks){
+  const steps = flatSteps(st);
+  const scored = steps.filter(s => !s.region);           // region extras don't count against you
+  const cpiMissed = [], missed = [];
+  let hit = 0;
+  scored.forEach((s, i) => {
+    const idx = steps.indexOf(s);
+    if (marks[idx]) hit++;
+    else { missed.push(s); if (s.cpi) cpiMissed.push(s); }
+  });
+  const pct = scored.length ? Math.round(hit / scored.length * 100) : 0;
+  return { hit, total: scored.length, pct, cpiMissed, missed,
+           pass: cpiMissed.length === 0 && pct >= TARGET };
+}
+
+function startDrill(id){
+  const st = STATIONS.find(s => s.id === id);
+  if (!st) return;
+  S.drill = { st, steps: flatSteps(st), i: -1, marks: {} };  // i = -1 → priming screen
+  S.screen = "drill";
+  render(); window.scrollTo(0, 0);
+}
+
+function viewStations(){
+  const cards = STATIONS.map(st => {
+    const steps = flatSteps(st);
+    const cpis = steps.filter(s => s.cpi).length;
+    const last = Store.stations[st.id];
+    const lastTxt = !last ? `<span class="stlast" style="color:var(--muted)">&mdash;</span>`
+      : `<span class="stlast" style="color:${last.pass ? "var(--ok)" : "var(--bad)"}">
+           ${last.pass ? "Pass" : "Fail"}<br>${last.pct}%</span>`;
+    return `<button class="stcard" data-station="${st.id}">
+      <span class="stcode">${esc(st.code)}</span>
+      <span class="stbody">
+        <span class="stname">${esc(st.name)}${st.it ? `<span class="itbadge">IT observed</span>` : ""}</span>
+        <span class="stmeta">${steps.length} steps &middot; ${cpis} CPI${cpis === 1 ? "" : "s"}${st.crew ? " &middot; " + esc(st.crew) : ""}</span>
+      </span>
+      ${lastTxt}
+    </button>`;
+  }).join("");
+
+  const gaps = STATION_GAPS.map(g => `<div class="gap">
+      <span>${esc(g.code)}</span><span>${esc(g.name)}${g.it ? `<span class="itbadge">IT observed</span>` : ""}</span>
+    </div>`).join("");
+
+  return `
+  ${masthead(`Practical stations drilled the way they're graded: recall the sequence out loud
+    from memory, then reveal it step by step and mark yourself honestly. Miss a CPI and the
+    station fails, exactly as it would on the day.`)}
+
+  <section class="sect">
+    <div class="sect-hd">
+      <span class="lbl">${STATIONS.length} stations with published step sheets</span>
+      <span class="lbl">IT observed = escalated to an Instructor Trainer</span>
+    </div>
+    <div class="stlist">${cards}</div>
+  </section>
+
+  <section class="sect">
+    <div class="sect-hd"><span class="lbl">Mandatory skills not drilled here</span></div>
+    <p class="hint" style="max-width:64ch">These are on the required list — several are
+      Instructor-Trainer observed and so are likely stations — but their official step sheets
+      are published only in the OEC 6 textbook and Instructor Toolkit. Rather than substitute
+      EMT-B sheets, whose step order and scored items genuinely differ, they're left out.
+      Ask your Instructor of Record for these; regions routinely hand them out.</p>
+    <div class="gaps">${gaps}</div>
+  </section>`;
+}
+
+function viewDrill(){
+  const d = S.drill, st = d.st;
+  const steps = d.steps;
+
+  if (d.i < 0){
+    const cpis = steps.filter(s => s.cpi).length;
+    return `
+    <div class="rail"><div class="rail-in">
+      <span class="lbl">Station ${esc(st.code)}</span><span class="rail-sp"></span>
+      <button class="link" data-stquit="1">Back to stations</button>
+    </div><div class="track"><i style="width:0%"></i></div></div>
+    <div class="qwrap">
+      <div class="qmeta"><span class="tag">${steps.length} steps &middot; ${cpis} CPI${cpis === 1 ? "" : "s"}</span>
+        ${st.it ? `<span class="flagbtn" aria-pressed="true" style="pointer-events:none;color:var(--warn);border-color:var(--warn)">IT observed</span>` : ""}</div>
+      <p class="stem" style="margin-bottom:8px">${esc(st.name)}</p>
+      <p class="dnote">${esc(st.note)}</p>
+      <div class="prime">
+        <span class="lbl">Before you reveal anything</span>
+        <p>Stand up and run the station out loud, start to finish, as if an evaluator were
+          watching. Then reveal the steps one at a time and mark yourself on what you actually
+          said &mdash; not on what you recognize when you see it.</p>
+      </div>
+      <p class="hint" style="margin-top:14px">Passing: ${esc(st.pass)}${st.crew ? " &middot; " + esc(st.crew) : ""}</p>
+      <div class="navrow">
+        <button class="btn" data-stbegin="1">Start revealing</button>
+        <button class="btn-2" data-stsheet="1">Just show me the sheet</button>
+        <span class="kbd"><kbd>Y</kbd> said it &middot; <kbd>N</kbd> missed it</span>
+      </div>
+    </div>`;
+  }
+
+  if (d.i >= steps.length){ return viewStationResult(); }
+
+  const s = steps[d.i];
+  const prevGroup = d.i > 0 ? steps[d.i - 1].group : null;
+  const showGroup = s.group !== prevGroup;
+  const done = steps.slice(0, d.i);
+
+  const history = done.map((p, i) => `<div class="step ${d.marks[i] ? "hit" : "miss"}">
+      <span class="stepn">${i + 1}</span>
+      <span class="stept">${esc(p.t)}${p.cpi ? `<span class="cpi">CPI</span>` : ""}${p.region ? `<span class="rgn">Region</span>` : ""}</span>
+    </div>`).join("");
+
+  return `
+  <div class="rail"><div class="rail-in">
+    <span class="lbl tnum">Step ${d.i + 1} / ${steps.length}</span>
+    <span class="rail-sp"></span>
+    <span class="lbl">${esc(st.code)}</span>
+    <button class="link" data-stquit="1">End drill</button>
+  </div><div class="track"><i style="width:${d.i / steps.length * 100}%"></i></div></div>
+
+  <div class="qwrap">
+    ${history ? `<div style="margin-bottom:20px;opacity:.72">${history}</div>` : ""}
+    ${showGroup ? `<div class="grouphd"><span class="lbl">${esc(s.group)}</span></div>` : ""}
+    <div class="step" style="border-color:var(--line-2)">
+      <span class="stepn">${d.i + 1}</span>
+      <span class="stept">${esc(s.t)}${s.cpi ? `<span class="cpi">CPI</span>` : ""}${s.region ? `<span class="rgn">Region</span>` : ""}</span>
+    </div>
+    ${s.region ? `<p class="hint">Appears on some regional sheets but not national Skill Guide 7-1 — not counted in your score here.</p>` : ""}
+    <div class="selfrow">
+      <button class="yes" data-mark="1">I said it</button>
+      <button class="no" data-mark="0">I missed it</button>
+    </div>
+    <div class="navrow"><span class="kbd"><kbd>Y</kbd> said it &middot; <kbd>N</kbd> missed it</span></div>
+  </div>`;
+}
+
+function viewSheet(){
+  const st = S.drill.st;
+  const groups = st.groups.map(g => `
+    <div class="grouphd"><span class="lbl">${esc(g.name)}</span></div>
+    ${g.steps.map((s, i) => `<div class="step">
+        <span class="stepn">${i + 1}</span>
+        <span class="stept">${esc(s.t)}${s.cpi ? `<span class="cpi">CPI</span>` : ""}${s.region ? `<span class="rgn">Region</span>` : ""}</span>
+      </div>`).join("")}`).join("");
+  return `
+  <div class="rail"><div class="rail-in">
+    <span class="lbl">${esc(st.code)} &mdash; full sheet</span><span class="rail-sp"></span>
+    <button class="link" data-stquit="1">Back to stations</button>
+  </div><div class="track"><i style="width:100%"></i></div></div>
+  <div class="qwrap">
+    <p class="stem" style="margin-bottom:8px">${esc(st.name)}</p>
+    <p class="dnote">${esc(st.note)}</p>
+    <p class="hint" style="margin-top:12px">Passing: ${esc(st.pass)}${st.crew ? " &middot; " + esc(st.crew) : ""}</p>
+    ${groups}
+    <div class="navrow">
+      <button class="btn" data-station="${st.id}">Drill it from memory</button>
+      <button class="btn-2" data-stquit="1">Back to stations</button>
+    </div>
+  </div>`;
+}
+
+function viewStationResult(){
+  const d = S.drill, st = d.st;
+  const v = stationVerdict(st, d.marks);
+  const R = 58, C = 2 * Math.PI * R;
+  const col = v.pass ? "var(--ok)" : "var(--bad)";
+
+  const why = v.cpiMissed.length
+    ? `Station failed on a Critical Performance Indicator. On the real sheet that is an
+       automatic fail no matter what the rest of your score looks like.`
+    : v.pct < TARGET
+      ? `Every CPI was covered, but the score is under the 80% needed on the remaining items.`
+      : `Every CPI covered and above the 80% threshold on the rest.`;
+
+  const missList = v.missed.length ? `
+    <section class="sect">
+      <div class="sect-hd"><span class="lbl">Missed &mdash; ${v.missed.length} step${v.missed.length === 1 ? "" : "s"}</span></div>
+      ${v.missed.map(s => `<div class="step miss">
+          <span class="stepn">${s.cpi ? "!" : "&middot;"}</span>
+          <span class="stept">${esc(s.t)}${s.cpi ? `<span class="cpi">CPI</span>` : ""}</span>
+        </div>`).join("")}
+    </section>` : "";
+
+  return `
+  ${tabsNav()}
+  <section class="score">
+    <div class="ring">
+      <svg width="140" height="140" viewBox="0 0 140 140">
+        <circle cx="70" cy="70" r="${R}" fill="none" stroke="var(--ink-2)" stroke-width="9"/>
+        <circle cx="70" cy="70" r="${R}" fill="none" stroke="${col}" stroke-width="9"
+          stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - v.pct / 100)}"/>
+      </svg>
+      <div class="ring-c"><b class="tnum" style="color:${col}">${v.pct}%</b><span>${v.pass ? "pass" : "fail"}</span></div>
+    </div>
+    <div class="score-txt">
+      <h2>${esc(st.code)} &mdash; ${esc(st.name)}</h2>
+      <p>${why}</p>
+      <div class="facts lbl">
+        <span class="fact"><b class="tnum">${v.hit}/${v.total}</b>steps</span>
+        <span class="fact"><b class="tnum">${v.cpiMissed.length}</b>CPI missed</span>
+        <span class="fact"><b class="tnum">${TARGET}%</b>threshold</span>
+      </div>
+    </div>
+  </section>
+  ${missList}
+  <div class="go">
+    <button class="btn" data-station="${st.id}">Run it again</button>
+    <button class="btn-2" data-stsheet="1">Read the full sheet</button>
+    <button class="btn-2" data-stquit="1">All stations</button>
+  </div>`;
+}
+
+function viewRef(){
+  const I = STATION_INTRO;
+  return `
+  ${masthead(`How the practical is run and scored, and the vocabulary the sheets actually use.
+    Worth reading once before your first station drill.`)}
+  <section class="sect ref">
+    <dl>
+      <div><dt>Structure</dt><dd>${esc(I.structure)}</dd></div>
+      <div><dt>Scoring</dt><dd>${esc(I.scoring)}</dd></div>
+      <div><dt>Say it out loud</dt><dd>${esc(I.voice)}</dd></div>
+      <div><dt>OEC vocabulary</dt><dd>${esc(I.terms)}</dd></div>
+      <div><dt>Retest policy</dt><dd>${esc(I.retest)}</dd></div>
+      <div><dt>The universal opener</dt><dd>Confirm the scene is safe, introduce yourself and
+        obtain permission to treat, then take Standard Precautions. These are CPIs on nearly
+        every sheet, they cost about eight seconds, and failing to state scene safety is the
+        most commonly cited automatic failure.</dd></div>
+      <div><dt>The CMS bookend</dt><dd>On every extremity skill, assess CMS before the
+        intervention and reassess it afterward. Both halves are CPIs. Say both out loud.</dd></div>
+      <div><dt>Synonyms are fine</dt><dd>BSI and Standard Precautions mean the same thing and are
+        used interchangeably in most courses; the sheets happen to print the latter. The same goes
+        for CMS and PMS. What gets scored is that you performed and voiced the step, not which of
+        two accepted names you gave it.</dd></div>
+      <div><dt>What varies by region</dt><dd>The specific four skills you'll be tested on are
+        chosen by your Instructor of Record, and some regions grade patient assessment from a
+        longer 21-point sheet that adds DCAP-BTLS, a second set of vitals, treating for shock
+        and preparing for transport. One question to your instructor &mdash; which four skills,
+        and which assessment sheet &mdash; resolves both unknowns.</dd></div>
+    </dl>
+  </section>`;
+}
+
+/* ---------------- render + events ---------------- */
+let clockTimer = null;
+function render(){
+  clearInterval(clockTimer); clockTimer = null;
+  app.innerHTML = S.screen === "setup"    ? viewSetup()
+                : S.screen === "quiz"     ? viewQuiz()
+                : S.screen === "results"  ? viewResults()
+                : S.screen === "stlist"   ? viewStations()
+                : S.screen === "sheet"    ? viewSheet()
+                : S.screen === "stresult" ? viewStationResult()
+                : S.screen === "ref"      ? viewRef()
+                : viewDrill();
+  if (S.screen === "quiz" && S.mode === "exam"){
+    clockTimer = setInterval(() => {
+      const el = $("#clock");
+      if (el) el.textContent = mmss(Date.now() - S.session.started);
+    }, 1000);
+  }
+}
+function goTab(t){
+  S.tab = t;
+  S.screen = t === "q" ? "setup" : t === "st" ? "stlist" : "ref";
+  S.session = null; S.drill = null;
+  render(); window.scrollTo(0, 0);
+}
+function markStep(ok){
+  const d = S.drill;
+  if (!d || d.i < 0 || d.i >= d.steps.length) return;
+  d.marks[d.i] = !!ok;
+  d.i++;
+  if (d.i >= d.steps.length){
+    const v = stationVerdict(d.st, d.marks);
+    Store.recordStation(d.st.id, { pass: v.pass, pct: v.pct, cpiMissed: v.cpiMissed.length });
+    S.screen = "stresult";
+  }
+  render();
+  if (S.screen === "stresult") window.scrollTo(0, 0);
+}
+
+function submit(){
+  const ss = S.session, it = ss.items[ss.i];
+  if (it.pick === null || ss.revealed) return;
+  ss.revealed = true;
+  Store.record(it.q.id, it.pick === it.correctPos);
+  render();
+}
+function next(){
+  const ss = S.session, it = ss.items[ss.i];
+  if (S.mode === "exam" && !ss.revealed && it.pick !== null && !it.scored){
+    it.scored = true;
+    Store.record(it.q.id, it.pick === it.correctPos);
+  }
+  if (ss.i === ss.items.length - 1){
+    ss.ended = Date.now();
+    S.screen = "results";
+    render(); window.scrollTo(0, 0);
+    return;
+  }
+  ss.i++; ss.revealed = false;
+  render(); window.scrollTo(0, 0);
+}
+function finishEarly(){
+  const ss = S.session;
+  ss.items = ss.items.slice(0, Math.max(1, ss.i + (ss.revealed || ss.items[ss.i].pick !== null ? 1 : 0)));
+  ss.ended = Date.now();
+  S.screen = "results";
+  render(); window.scrollTo(0, 0);
+}
+
+app.addEventListener("click", e => {
+  const t = e.target.closest("button");
+  if (!t) return;
+  const d = t.dataset;
+
+  if (d.tab) return goTab(d.tab);
+  if (d.station) return startDrill(d.station);
+  if (d.stbegin){ S.drill.i = 0; return render(); }
+  if (d.stsheet){ S.screen = "sheet"; render(); return window.scrollTo(0, 0); }
+  if (d.mark !== undefined) return markStep(d.mark === "1");
+  if (d.stquit){ S.screen = "stlist"; S.drill = null; render(); return window.scrollTo(0, 0); }
+
+  if (d.dom){ S.picked.has(d.dom) ? S.picked.delete(d.dom) : S.picked.add(d.dom); return render(); }
+  if (d.all){ S.picked = d.all === "1" ? new Set(DOMAINS.map(x => x.key)) : new Set(); return render(); }
+  if (d.set){ S[d.set] = d.val === "all" ? "all" : (isNaN(+d.val) ? d.val : +d.val); return render(); }
+  if (d.start){ return startSession(); }
+  if (d.reset){ Store.reset(); return render(); }
+
+  if (d.pick !== undefined){
+    const it = S.session.items[S.session.i];
+    if (S.session.revealed) return;
+    it.pick = +d.pick;
+    if (S.mode === "practice") return submit();
+    return render();
+  }
+  if (d.submit) return submit();
+  if (d.next) return next();
+  if (d.back){ S.session.i--; S.session.revealed = false; return render(); }
+  if (d.flag){ const it = S.session.items[S.session.i]; it.flag = !it.flag; return render(); }
+  if (d.quit) return finishEarly();
+  if (d.retry) return retryMissed();
+  if (d.home){ S.screen = "setup"; S.session = null; render(); return window.scrollTo(0, 0); }
+});
+
+document.addEventListener("keydown", e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+  if (S.screen === "drill" && S.drill){
+    const k = e.key.toLowerCase();
+    if (S.drill.i < 0){
+      if (k === "enter" || k === "y"){ e.preventDefault(); S.drill.i = 0; render(); }
+      return;
+    }
+    if (k === "y"){ e.preventDefault(); markStep(true); }
+    else if (k === "n"){ e.preventDefault(); markStep(false); }
+    return;
+  }
+
+  if (S.screen !== "quiz") return;
+  const ss = S.session, it = ss.items[ss.i];
+  if (e.key >= "1" && e.key <= "4"){
+    if (ss.revealed) return;
+    e.preventDefault();
+    it.pick = +e.key - 1;
+    S.mode === "practice" ? submit() : render();
+  } else if (e.key === "Enter"){
+    e.preventDefault();
+    if (ss.revealed || S.mode === "exam") next();
+    else if (it.pick !== null) submit();
+  }
+});
+
+Store.boot(() => { if (S.screen === "setup") render(); });
+render();
+</script>
