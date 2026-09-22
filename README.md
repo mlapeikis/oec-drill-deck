@@ -9,6 +9,10 @@ Study tool for National Ski Patrol **Outdoor Emergency Care** candidates. Two mo
   sequence out loud from memory, then reveal it step by step and mark yourself. Critical
   Performance Indicators are flagged, and missing one fails the station exactly as it would on
   the day.
+- **Scenarios** — 7 full-patient calls, trauma and medical, built as beat sequences. Free-recall
+  beats ask you to say your answer out loud before revealing a rubric you self-mark; decision
+  beats make you choose an action and show you the consequence. Scored the same way: every CPI,
+  plus 80% of the rest.
 
 Everything is one self-contained HTML file. No build step required to *use* it, no server, no
 dependencies, no tracking, works offline.
@@ -75,7 +79,9 @@ That regenerates `index.html`. Commit and push, and Pages updates within a minut
 | `src/questions.js` | First 154 questions, plus the `DOMAINS` list |
 | `src/questions2.js` | Remaining 111 questions |
 | `src/stations.js` | Practical station step sheets, CPI flags, exam brief text |
+| `src/scenarios.js` | Full-patient scenarios as beat sequences |
 | `build.py` | Concatenates the above into `index.html` |
+| `make_icons.py` | Regenerates the home screen icons |
 
 ### Adding a question
 
@@ -115,6 +121,44 @@ Append to `STATIONS` in `src/stations.js`:
 - `it: true` — NSP escalates this skill to Instructor Trainer observation.
 
 When you add a station, remove its entry from `STATION_GAPS` at the bottom of the same file.
+
+### Adding a scenario
+
+Append to `SCENARIOS` in `src/scenarios.js`. A scenario is a list of beats, and there are three
+kinds:
+
+```js
+{id:"unique-id", kind:"trauma", title:"Short title", difficulty:"Medium",
+ setting:"Where and when · temperature and conditions",
+ dispatch:"What you're told before you arrive.",
+ teaches:"One line on what this scenario is actually testing.",
+ beats:[
+
+  // narrative or findings — not scored, moves the patient's state forward
+  {type:"info", text:"What you see on arrival."},
+
+  // free recall — they say it out loud, then self-mark against the rubric
+  {type:"recall", prompt:"Say out loud what you do first.",
+   rubric:[
+     {t:"State the scene is safe", cpi:true},
+     {t:"Something scored but not critical"}
+   ]},
+
+  // a decision with consequences — exactly one option carries ok:true,
+  // options are shuffled at runtime, cpi on the beat makes a wrong pick fatal
+  {type:"choice", cpi:true, prompt:"What do you do?",
+   options:[
+     {t:"The right action", ok:true, say:"What happens as a result."},
+     {t:"A plausible wrong action", say:"What goes wrong, and why it was wrong."},
+     {t:"Another wrong action", say:"..."},
+     {t:"A fourth option", say:"..."}
+   ]}
+ ]},
+```
+
+Every rubric item and every choice beat counts as one scored item. `info` beats are not scored.
+Write the `say` text for wrong options as teaching, not scolding — it's the part people actually
+read.
 
 ---
 

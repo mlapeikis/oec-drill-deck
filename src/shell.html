@@ -174,8 +174,9 @@ h1{font-size:clamp(25px,6vw,34px);font-weight:700;letter-spacing:-.022em;margin:
 .ring{position:relative;flex:none}
 .ring svg{display:block;transform:rotate(-90deg)}
 .ring-c{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
-.ring-c b{font-family:var(--cond);font-size:38px;font-weight:600;line-height:1;
-  letter-spacing:.01em;font-variant-numeric:tabular-nums}
+.ring-c b{font-family:var(--cond);font-size:34px;font-weight:600;line-height:1;
+  letter-spacing:-.015em;font-variant-numeric:tabular-nums;display:block;
+  max-width:104px;overflow:hidden}
 .ring-c span{font-family:var(--cond);font-size:12.5px;letter-spacing:.09em;
   text-transform:uppercase;color:var(--muted);display:block;margin-top:3px}
 .score-txt{flex:1 1 230px;min-width:0}
@@ -213,10 +214,16 @@ h1{font-size:clamp(25px,6vw,34px);font-weight:700;letter-spacing:-.022em;margin:
 .foot b{color:var(--ink);font-weight:600}
 
 /* ---------- mode tabs ---------- */
-.tabs{display:flex;gap:2px;margin-top:20px;border-bottom:1px solid var(--line)}
+.tabs{display:flex;flex-wrap:wrap;gap:2px;margin-top:20px;
+  border-bottom:1px solid var(--line)}
 .tabs button{font-family:var(--cond);text-transform:uppercase;letter-spacing:.08em;
   font-weight:600;font-size:13.5px;color:var(--muted);padding:9px 14px 8px;
-  border-bottom:2px solid transparent;margin-bottom:-1px;transition:.12s}
+  border-bottom:2px solid transparent;transition:.12s}
+/* tighten at phone width so four tabs hold one line even if the condensed
+   webfont never loads (offline use), with wrapping as the safety net */
+@media (max-width:470px){
+  .tabs button{padding:9px 9px 8px;font-size:12.5px;letter-spacing:.04em}
+}
 .tabs button:hover{color:var(--ink)}
 .tabs button[aria-pressed="true"]{color:var(--accent);border-bottom-color:var(--accent)}
 
@@ -267,6 +274,58 @@ h1{font-size:clamp(25px,6vw,34px);font-weight:700;letter-spacing:-.022em;margin:
   padding:17px 18px;margin-top:20px}
 .prime p{margin:0;font-family:var(--serif);font-size:16.5px;line-height:1.5;max-width:60ch}
 .prime .lbl{display:block;margin-bottom:7px}
+
+/* ---------- scenarios ---------- */
+.sccard{display:block;width:100%;text-align:left;background:var(--surface);
+  border:1px solid var(--line);border-radius:11px;padding:14px 16px;
+  transition:border-color .12s,background .12s}
+.sccard:hover{border-color:var(--line-2);background:var(--surface-2)}
+.sctop{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:6px}
+.kind{font-family:var(--cond);text-transform:uppercase;letter-spacing:.08em;font-weight:600;
+  font-size:11px;border-radius:999px;padding:1px 9px 0}
+.kind.trauma{color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-line)}
+.kind.medical{color:var(--ok);background:var(--ok-soft);border:1px solid var(--ok-line)}
+.scname{font-weight:600;font-size:16px;letter-spacing:-.01em;flex:1;min-width:0}
+.scset{display:block;font-family:var(--cond);font-size:13px;color:var(--muted);
+  letter-spacing:.03em;margin-bottom:7px}
+.scteach{display:block;font-family:var(--serif);font-size:15px;line-height:1.5;
+  color:var(--muted);max-width:62ch}
+
+.narr{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--line-2);
+  border-radius:0 10px 10px 0;padding:16px 18px;margin-bottom:18px}
+.narr p{margin:0;font-family:var(--serif);font-size:17px;line-height:1.55;max-width:62ch}
+.ask{font-family:var(--serif);font-size:19px;line-height:1.45;margin:0 0 6px;
+  max-width:60ch;text-wrap:pretty}
+.saybox{background:var(--surface-2);border:1px dashed var(--line-2);border-radius:10px;
+  padding:14px 16px;margin:16px 0 18px}
+.saybox p{margin:0;font-size:14.5px;color:var(--muted);max-width:56ch}
+.rubric{display:flex;flex-direction:column;gap:7px;margin-top:6px}
+.ritem{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;
+  background:var(--surface);border:1px solid var(--line);border-radius:9px;
+  padding:11px 13px;transition:.12s}
+.ritem:hover{border-color:var(--line-2)}
+.ritem[aria-pressed="true"]{border-color:var(--ok-line);background:var(--ok-soft)}
+.rtick{width:17px;height:17px;flex:none;border:1.5px solid var(--line-2);border-radius:5px;
+  display:grid;place-items:center;margin-top:2px}
+.ritem[aria-pressed="true"] .rtick{background:var(--ok);border-color:var(--ok)}
+.rtick svg{display:none;width:10px;height:10px}
+.ritem[aria-pressed="true"] .rtick svg{display:block}
+.rtext{flex:1;min-width:0;font-family:var(--serif);font-size:16px;line-height:1.45}
+.conseq{margin-top:16px;border-left:3px solid var(--line-2);padding:2px 0 2px 15px}
+.conseq.ok{border-left-color:var(--ok)}
+.conseq.no{border-left-color:var(--bad)}
+.conseq .lbl{display:block;margin-bottom:5px}
+.conseq.ok .lbl{color:var(--ok)}
+.conseq.no .lbl{color:var(--bad)}
+.conseq p{margin:0;font-family:var(--serif);font-size:16.5px;line-height:1.55;max-width:63ch}
+.pathrow{display:flex;gap:11px;align-items:baseline;padding:9px 0;
+  border-bottom:1px solid var(--line)}
+.pathrow:last-child{border-bottom:none}
+.pathn{font-family:var(--cond);font-size:13.5px;color:var(--muted);flex:none;width:26px;
+  font-variant-numeric:tabular-nums}
+.pathb{flex:1;min-width:0;font-size:14.5px}
+.pathv{font-family:var(--cond);font-size:13px;letter-spacing:.06em;text-transform:uppercase;
+  font-weight:600;flex:none}
 
 /* ---------- reference ---------- */
 .ref dl{margin:0;display:flex;flex-direction:column;gap:17px}
@@ -361,6 +420,12 @@ const Store = (() => {
       Store.save();
     },
 
+    recordScenario(id, result){
+      stations["sc:" + id] = Object.assign({ at: Date.now() }, result);
+      Store.save();
+    },
+    scenarioResult(id){ return stations["sc:" + id]; },
+
     save(){
       toLocal();
       clearTimeout(timer);
@@ -425,10 +490,11 @@ const S = {
   mode: "practice",      // practice | exam
   source: "all",         // all | weak
   session: null,
-  drill: null
+  drill: null,
+  sc: null
 };
 
-const TABS = [["q","Question bank"],["st","Skill stations"],["ref","Exam brief"]];
+const TABS = [["q","Questions"],["st","Stations"],["sc","Scenarios"],["ref","Brief"]];
 
 function masthead(sub){
   return `<header class="mast" style="border-bottom:none;padding-bottom:0">
@@ -921,6 +987,243 @@ function viewStationResult(){
   </div>`;
 }
 
+/* ---------------- scenarios ---------------- */
+function scScored(sc){
+  // every rubric item and every choice beat counts; info beats don't
+  const out = [];
+  sc.beats.forEach((b, bi) => {
+    if (b.type === "recall") b.rubric.forEach((r, ri) => out.push({ bi, ri, t: r.t, cpi: !!r.cpi }));
+    else if (b.type === "choice") out.push({ bi, ri: null, t: b.prompt, cpi: !!b.cpi });
+  });
+  return out;
+}
+function scVerdict(run){
+  const items = scScored(run.s);
+  const missed = [], cpiMissed = [];
+  let hit = 0;
+  items.forEach(it => {
+    const m = run.marks[it.bi];
+    const got = it.ri === null ? !!(m && m.ok) : !!(m && m.hits && m.hits[it.ri]);
+    if (got) hit++;
+    else { missed.push(it); if (it.cpi) cpiMissed.push(it); }
+  });
+  const pct = items.length ? Math.round(hit / items.length * 100) : 0;
+  return { hit, total: items.length, pct, missed, cpiMissed,
+           pass: cpiMissed.length === 0 && pct >= TARGET };
+}
+function startScenario(id){
+  const sc = SCENARIOS.find(x => x.id === id);
+  if (!sc) return;
+  const order = {};
+  sc.beats.forEach((b, i) => { if (b.type === "choice") order[i] = shuffle(b.options.map((_, j) => j)); });
+  S.sc = { s: sc, i: 0, stage: "ask", marks: {}, order, started: Date.now() };
+  S.screen = "scrun";
+  render(); window.scrollTo(0, 0);
+}
+function scAdvance(){
+  const r = S.sc;
+  r.i++; r.stage = "ask";
+  if (r.i >= r.s.beats.length){
+    const v = scVerdict(r);
+    Store.recordScenario(r.s.id, { pass: v.pass, pct: v.pct, cpiMissed: v.cpiMissed.length });
+    S.screen = "scresult";
+  }
+  render(); window.scrollTo(0, 0);
+}
+
+function viewScenarios(){
+  const card = sc => {
+    const last = Store.scenarioResult(sc.id);
+    const n = scScored(sc).length;
+    const cpis = scScored(sc).filter(x => x.cpi).length;
+    return `<button class="sccard" data-scenario="${sc.id}">
+      <span class="sctop">
+        <span class="kind ${sc.kind}">${sc.kind}</span>
+        <span class="scname">${esc(sc.title)}</span>
+        ${last ? `<span class="stlast" style="color:${last.pass ? "var(--ok)" : "var(--bad)"}">
+            ${last.pass ? "Pass" : "Fail"} ${last.pct}%</span>` : ""}
+      </span>
+      <span class="scset">${esc(sc.setting)} &middot; ${sc.beats.length} beats &middot; ${n} scored items &middot; ${cpis} CPIs &middot; ${esc(sc.difficulty)}</span>
+      <span class="scteach">${esc(sc.teaches)}</span>
+    </button>`;
+  };
+  const trauma = SCENARIOS.filter(s => s.kind === "trauma").map(card).join("");
+  const medical = SCENARIOS.filter(s => s.kind === "medical").map(card).join("");
+
+  return `
+  ${masthead(`Full-patient scenarios, the way the practical runs them. You say your answer out
+    loud from memory, then reveal the rubric and mark what you actually covered &mdash; and at the
+    decision points, you live with what you chose.`)}
+
+  <section class="sect">
+    <div class="sect-hd"><span class="lbl">Trauma scenarios</span></div>
+    <div class="stlist">${trauma}</div>
+  </section>
+  <section class="sect">
+    <div class="sect-hd"><span class="lbl">Medical scenarios</span></div>
+    <div class="stlist">${medical}</div>
+  </section>
+  <section class="sect">
+    <p class="hint" style="max-width:64ch">Expect one trauma and one medical scenario at your
+      final. Scoring here matches the real sheets: every Critical Performance Indicator, plus
+      ${TARGET}% of everything else. Say your answers out loud rather than thinking them &mdash;
+      recognizing a rubric item when you see it is not the same skill as producing it under
+      pressure, and only one of them is graded.</p>
+  </section>`;
+}
+
+function viewScenario(){
+  const r = S.sc, sc = r.s, b = sc.beats[r.i];
+  const head = `
+  <div class="rail"><div class="rail-in">
+    <span class="lbl tnum">Beat ${r.i + 1} / ${sc.beats.length}</span>
+    <span class="rail-sp"></span>
+    <span class="lbl">${esc(sc.title)}</span>
+    <button class="link" data-scquit="1">End</button>
+  </div><div class="track"><i style="width:${r.i / sc.beats.length * 100}%"></i></div></div>`;
+
+  if (b.type === "info"){
+    return `${head}<div class="qwrap">
+      <div class="narr"><p>${esc(b.text)}</p></div>
+      <div class="navrow"><button class="btn" data-scnext="1">Continue</button></div>
+    </div>`;
+  }
+
+  if (b.type === "recall"){
+    if (r.stage === "ask"){
+      return `${head}<div class="qwrap">
+        <p class="ask">${esc(b.prompt)}</p>
+        <div class="saybox"><p>Say it out loud, all of it, before you reveal anything. If you
+          are somewhere you can't speak, whisper it or mouth it &mdash; the point is producing the
+          answer from memory rather than recognizing it on a list.</p></div>
+        <div class="navrow">
+          <button class="btn" data-screveal="1">I've said my answer &mdash; reveal the rubric</button>
+        </div>
+      </div>`;
+    }
+    const m = r.marks[r.i] || (r.marks[r.i] = { hits: {} });
+    const items = b.rubric.map((it, i) => `<button class="ritem" data-rmark="${i}" aria-pressed="${!!m.hits[i]}">
+        <span class="rtick"><svg viewBox="0 0 10 10" fill="none"><path d="M1 5.2 3.7 8 9 2" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="rtext">${esc(it.t)}${it.cpi ? `<span class="cpi">CPI</span>` : ""}</span>
+      </button>`).join("");
+    const got = Object.values(m.hits).filter(Boolean).length;
+    return `${head}<div class="qwrap">
+      <p class="ask">${esc(b.prompt)}</p>
+      <div class="sect-hd" style="margin-top:20px">
+        <span class="lbl">Tap only what you actually said &mdash; ${got} of ${b.rubric.length}</span>
+      </div>
+      <div class="rubric">${items}</div>
+      <div class="navrow"><button class="btn" data-scnext="1">Continue</button></div>
+    </div>`;
+  }
+
+  // choice
+  const ord = r.order[r.i];
+  const m = r.marks[r.i];
+  const answered = !!m;
+  const opts = ord.map((oi, pos) => {
+    const o = b.options[oi];
+    let cls = "ch";
+    if (answered){
+      if (o.ok) cls += " right";
+      else if (m.pick === oi) cls += " wrong";
+    }
+    const mark = answered && o.ok ? "Correct" : answered && m.pick === oi ? "Your choice" : "";
+    return `<button class="${cls}" data-scpick="${oi}" ${answered ? "disabled" : ""}>
+        <span class="ch-k">${KEYS[pos]}</span>
+        <span class="ch-t">${esc(o.t)}</span>
+        ${mark ? `<span class="ch-mk">${mark}</span>` : ""}
+      </button>`;
+  }).join("");
+  const chosen = answered ? b.options[m.pick] : null;
+
+  return `${head}<div class="qwrap">
+    ${b.cpi ? `<div class="qmeta"><span class="tag">Critical &mdash; CPI</span></div>` : ""}
+    <p class="ask">${esc(b.prompt)}</p>
+    <div class="choices" style="margin-top:18px">${opts}</div>
+    ${answered ? `<div class="conseq ${m.ok ? "ok" : "no"}">
+        <span class="lbl">${m.ok ? "What happens next" : b.cpi ? "CPI missed &mdash; what happens next" : "What happens next"}</span>
+        <p>${esc(chosen.say)}</p>
+      </div>` : ""}
+    <div class="navrow">
+      ${answered ? `<button class="btn" data-scnext="1">Continue</button>` : ""}
+      <span class="kbd"><kbd>1</kbd>&ndash;<kbd>4</kbd> choose &middot; <kbd>Enter</kbd> continue</span>
+    </div>
+  </div>`;
+}
+
+function viewScenarioResult(){
+  const r = S.sc, sc = r.s, v = scVerdict(r);
+  const R = 58, C = 2 * Math.PI * R;
+  const col = v.pass ? "var(--ok)" : "var(--bad)";
+  const mins = Math.round((Date.now() - r.started) / 60000);
+
+  const why = v.cpiMissed.length
+    ? `Failed on ${v.cpiMissed.length} Critical Performance Indicator${v.cpiMissed.length === 1 ? "" : "s"}. On the day that ends the station regardless of everything else you did well.`
+    : v.pct < TARGET
+      ? `Every CPI covered, but under the ${TARGET}% needed on the remaining items.`
+      : `Every CPI covered and clear of the ${TARGET}% threshold.`;
+
+  const path = sc.beats.map((b, i) => {
+    if (b.type === "info") return "";
+    const m = r.marks[i];
+    if (b.type === "choice"){
+      const ok = m && m.ok;
+      return `<div class="pathrow"><span class="pathn tnum">${i + 1}</span>
+        <span class="pathb">Decision &mdash; ${esc(b.prompt.slice(0, 64))}${b.prompt.length > 64 ? "&hellip;" : ""}</span>
+        <span class="pathv" style="color:${ok ? "var(--ok)" : "var(--bad)"}">${ok ? "Right" : "Wrong"}</span></div>`;
+    }
+    const got = m ? Object.values(m.hits).filter(Boolean).length : 0;
+    const tot = b.rubric.length;
+    const good = got / tot >= TARGET / 100;
+    return `<div class="pathrow"><span class="pathn tnum">${i + 1}</span>
+      <span class="pathb">Recall &mdash; ${esc(b.prompt.slice(0, 64))}${b.prompt.length > 64 ? "&hellip;" : ""}</span>
+      <span class="pathv tnum" style="color:${good ? "var(--ok)" : "var(--warn)"}">${got}/${tot}</span></div>`;
+  }).join("");
+
+  const missList = v.missed.length ? `
+    <section class="sect">
+      <div class="sect-hd"><span class="lbl">Missed &mdash; ${v.missed.length} item${v.missed.length === 1 ? "" : "s"}</span></div>
+      ${v.missed.map(x => `<div class="step miss">
+          <span class="stepn">${x.cpi ? "!" : "&middot;"}</span>
+          <span class="stept">${esc(x.t)}${x.cpi ? `<span class="cpi">CPI</span>` : ""}</span>
+        </div>`).join("")}
+    </section>` : "";
+
+  return `
+  ${tabsNav()}
+  <section class="score">
+    <div class="ring">
+      <svg width="140" height="140" viewBox="0 0 140 140">
+        <circle cx="70" cy="70" r="${R}" fill="none" stroke="var(--ink-2)" stroke-width="9"/>
+        <circle cx="70" cy="70" r="${R}" fill="none" stroke="${col}" stroke-width="9"
+          stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - v.pct / 100)}"/>
+      </svg>
+      <div class="ring-c"><b class="tnum" style="color:${col}">${v.pct}%</b><span>${v.pass ? "pass" : "fail"}</span></div>
+    </div>
+    <div class="score-txt">
+      <h2>${esc(sc.title)}</h2>
+      <p>${why}</p>
+      <div class="facts lbl">
+        <span class="fact"><b class="tnum">${v.hit}/${v.total}</b>items</span>
+        <span class="fact"><b class="tnum">${v.cpiMissed.length}</b>CPI missed</span>
+        <span class="fact"><b class="tnum">${mins}</b>min</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sect">
+    <div class="sect-hd"><span class="lbl">Your path through the call</span></div>
+    ${path}
+  </section>
+  ${missList}
+
+  <div class="go">
+    <button class="btn" data-scenario="${sc.id}">Run it again</button>
+    <button class="btn-2" data-scquit="1">All scenarios</button>
+  </div>`;
+}
+
 function viewRef(){
   const I = STATION_INTRO;
   return `
@@ -963,6 +1266,9 @@ function render(){
                 : S.screen === "sheet"    ? viewSheet()
                 : S.screen === "stresult" ? viewStationResult()
                 : S.screen === "ref"      ? viewRef()
+                : S.screen === "sclist"   ? viewScenarios()
+                : S.screen === "scrun"    ? viewScenario()
+                : S.screen === "scresult" ? viewScenarioResult()
                 : viewDrill();
   if (S.screen === "quiz" && S.mode === "exam"){
     clockTimer = setInterval(() => {
@@ -973,8 +1279,8 @@ function render(){
 }
 function goTab(t){
   S.tab = t;
-  S.screen = t === "q" ? "setup" : t === "st" ? "stlist" : "ref";
-  S.session = null; S.drill = null;
+  S.screen = t === "q" ? "setup" : t === "st" ? "stlist" : t === "sc" ? "sclist" : "ref";
+  S.session = null; S.drill = null; S.sc = null;
   render(); window.scrollTo(0, 0);
 }
 function markStep(ok){
@@ -1033,6 +1339,22 @@ app.addEventListener("click", e => {
   if (d.mark !== undefined) return markStep(d.mark === "1");
   if (d.stquit){ S.screen = "stlist"; S.drill = null; render(); return window.scrollTo(0, 0); }
 
+  if (d.scenario) return startScenario(d.scenario);
+  if (d.screveal){ S.sc.stage = "mark"; if (!S.sc.marks[S.sc.i]) S.sc.marks[S.sc.i] = { hits: {} }; return render(); }
+  if (d.rmark !== undefined){
+    const m = S.sc.marks[S.sc.i] || (S.sc.marks[S.sc.i] = { hits: {} });
+    m.hits[d.rmark] = !m.hits[d.rmark];
+    return render();
+  }
+  if (d.scpick !== undefined){
+    if (S.sc.marks[S.sc.i]) return;
+    const b = S.sc.s.beats[S.sc.i], oi = +d.scpick;
+    S.sc.marks[S.sc.i] = { pick: oi, ok: !!b.options[oi].ok };
+    return render();
+  }
+  if (d.scnext) return scAdvance();
+  if (d.scquit){ S.screen = "sclist"; S.sc = null; render(); return window.scrollTo(0, 0); }
+
   if (d.dom){ S.picked.has(d.dom) ? S.picked.delete(d.dom) : S.picked.add(d.dom); return render(); }
   if (d.all){ S.picked = d.all === "1" ? new Set(DOMAINS.map(x => x.key)) : new Set(); return render(); }
   if (d.set){ S[d.set] = d.val === "all" ? "all" : (isNaN(+d.val) ? d.val : +d.val); return render(); }
@@ -1066,6 +1388,30 @@ document.addEventListener("keydown", e => {
     }
     if (k === "y"){ e.preventDefault(); markStep(true); }
     else if (k === "n"){ e.preventDefault(); markStep(false); }
+    return;
+  }
+
+  if (S.screen === "scrun" && S.sc){
+    const b = S.sc.s.beats[S.sc.i], k = e.key.toLowerCase();
+    if (b.type === "choice" && e.key >= "1" && e.key <= "4"){
+      if (S.sc.marks[S.sc.i]) return;
+      const pos = +e.key - 1, ord = S.sc.order[S.sc.i];
+      if (pos >= ord.length) return;
+      e.preventDefault();
+      const oi = ord[pos];
+      S.sc.marks[S.sc.i] = { pick: oi, ok: !!b.options[oi].ok };
+      return render();
+    }
+    if (k === "enter"){
+      e.preventDefault();
+      if (b.type === "recall" && S.sc.stage === "ask"){
+        S.sc.stage = "mark";
+        if (!S.sc.marks[S.sc.i]) S.sc.marks[S.sc.i] = { hits: {} };
+        return render();
+      }
+      if (b.type === "choice" && !S.sc.marks[S.sc.i]) return;
+      return scAdvance();
+    }
     return;
   }
 
